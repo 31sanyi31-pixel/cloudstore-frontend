@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Store - Platform Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #1a2332;
+            color: #333;
+        }
+
+        /* ==================== UTILITY ==================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #6366f1;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* ==================== PAGE STYLING ==================== */
+        .page {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==================== LOGIN PAGE ==================== */
+        #loginPage {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+            padding: 30px;
+            border-radius: 16px;
+            color: white;
+            margin: -40px -40px 40px -40px;
+        }
+
+        .cloud-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 28px;
+        }
+
+        .logo-section h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .logo-section p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #9ca3af;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .login-footer a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .page-footer {
+            text-align: center;
+            padding: 20px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        /* ==================== REGISTER PAGE ==================== */
+        #registerPage {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .register-container h2 {
+            margin-bottom: 10px;
+            color: #1f2937;
+            font-size: 24px;
+        }
+
+        .register-container > p {
+            color: #9ca3af;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+
+        /* ==================== MARKETPLACE PAGE ==================== */
+        #marketplacePage {
+            background: #f9fafb;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar-logo {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 40px 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 18px;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .hero-stars {
+            font-size: 60px;
+            margin-bottom: 20px;
+            letter-spacing: 10px;
+        }
+
+        .products-section {
+            padding: 0 20px 40px;
+        }
+
+        .products-section h3 {
+            margin-bottom: 25px;
+            color: #1f2937;
+            font-size: 20px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .product-price {
+            color: #6366f1;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 10px 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 10px;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 12px;
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #6366f1;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        /* ==================== ADMIN DASHBOARD ==================== */
+        #adminPage {
+            background: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .sidebar {
+            width: 200px;
+            background: #1f2937;
+            color: white;
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .sidebar-logo-text h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-logo-text p {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #6366f1;
+            color: white;
+        }
+
+        .sidebar-menu-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            background: #ef4444;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .change-login-text {
+            font-size: 12px;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        .change-login-text a {
+            color: #6366f1;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #6366f1;
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            color: #6366f1;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .accounts-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .accounts-section h3 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .accounts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .accounts-table thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .accounts-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .accounts-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #1f2937;
+        }
+
+        .accounts-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-locked {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-wrap: wrap;
+            }
+
+            .search-bar {
+                max-width: 100%;
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .hero-section h2 {
+                font-size: 32px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .sidebar {
+                width: 0;
+                padding: 0;
+            }
+
+            .sidebar.active {
+                width: 200px;
+                z-index: 100;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container,
+            .register-container {
+                padding: 20px;
+            }
+
+            .hero-section h2 {
+                font-size: 24px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .accounts-table {
+                font-size: 12px;
+            }
+
+            .accounts-table th,
+            .accounts-table td {
+                padding: 10px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== LOGIN PAGE ==================== -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="logo-section">
+                <div class="cloud-icon">☁️</div>
+                <h1>Cloudstore.id</h1>
+                <p>Masuk untuk mulai menerima tugas dan komisi harian</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginPhone">Nomor Handphone</label>
+                    <input type="tel" id="loginPhone" placeholder="08125854558" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Kata Sandi</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary login-btn">Masuk</button>
+            </form>
+
+            <div class="login-footer">
+                Belum punya akun? <a onclick="goToRegister()">Daftar sekarang</a>
+            </div>
+        </div>
+        <div class="page-footer">
+            Dengan masuk, Anda menyetujui penggunaan akun Cloudstore.id
+        </div>
+    </div>
+
+    <!-- ==================== REGISTER PAGE ==================== -->
+    <div id="registerPage" class="page">
+        <div class="register-container">
+            <h2>Buat Akun Baru</h2>
+            <p>Isi semua data di bawah untuk membuat akun Anda</p>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="regName">Nama Lengkap *</label>
+                    <input type="text" id="regName" placeholder="Masukkan nama lengkap Anda" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPhone">Nomor Handphone *</label>
+                    <input type="tel" id="regPhone" placeholder="☎xxxxxxxxxx" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">Email *</label>
+                    <input type="email" id="regEmail" placeholder="email@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Kata Sandi *</label>
+                    <input type="password" id="regPassword" placeholder="Minimal 8 karakter" required minlength="8">
+                    <p class="helper-text">Minimal 8 karakter, harus mengandung huruf besar, huruf kecil, dan angka</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="regConfirmPassword">Konfirmasi Kata Sandi *</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Ketik ulang kata sandi" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="agreeTerms" required>
+                    <label for="agreeTerms">Saya setuju dengan syarat dan ketentuan penggunaan</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary register-btn">Daftar Akun</button>
+            </form>
+
+            <div class="login-footer">
+                Sudah punya akun? <a onclick="goToLogin()">Masuk di sini</a>
+            </div>
+        </div>
+        <div class="page-footer">
+            Dengan mendaftar, Anda menyetujui penggunaan akun Cloud Store
+        </div>
+    </div>
+
+    <!-- ==================== MARKETPLACE PAGE ==================== -->
+    <div id="marketplacePage" class="page">
+        <div class="navbar">
+            <div class="container navbar-content">
+                <div class="navbar-logo">
+                    <span>☁️</span>
+                    <span>Cloud Store</span>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Cari nama produk..." id="searchInput">
+                    <button type="button">🔍</button>
+                </div>
+                <div class="navbar-user">
+                    <span id="userGreeting">Halo, User!</span>
+                    <div class="user-avatar" onclick="goToAdmin()">👤</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-stars">⭐⭐⭐⭐⭐</div>
+                <h2>Cloud Store</h2>
+                <p>Daftar untuk mulai mengerjakan tugas dan mendapatkan komisi</p>
+            </div>
+        </div>
+
+        <div class="container products-section">
+            <h3>Produk Populer</h3>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products akan di-generate oleh JavaScript -->
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="goToMarketplace()">
+                <div class="nav-icon">🏠</div>
+                <div>Beranda</div>
+            </div>
+            <div class="nav-item" onclick="alert('Fitur Bantuan - Coming Soon')">
+                <div class="nav-icon">💬</div>
+                <div>Bantuan</div>
+            </div>
+            <div class="nav-item" onclick="alert('Fitur Hadiah - Coming Soon')">
+                <div class="nav-icon">🎁</div>
+                <div>Hadiah</div>
+            </div>
+            <div class="nav-item" onclick="goToAdmin()">
+                <div class="nav-icon">👤</div>
+                <div>Akun</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ADMIN DASHBOARD PAGE ==================== -->
+    <div id="adminPage" class="page">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">☁️</div>
+                <div class="sidebar-logo-text">
+                    <h3>Cloud Store</h3>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#" class="active" onclick="handleAdminMenuClick(event, 'dashboard')">
+                        <span class="sidebar-menu-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="handleAdminMenuClick(event, 'accounts')">
+                        <span class="sidebar-menu-icon">👥</span>
+                        <span>Kelola Akun</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="handleAdminMenuClick(event, 'create')">
+                        <span class="sidebar-menu-icon">➕</span>
+                        <span>Buat Akun Baru</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="handleAdminMenuClick(event, 'stats')">
+                        <span class="sidebar-menu-icon">📈</span>
+                        <span>Statistik</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="handleLogout()">🚪 Keluar</button>
+                <div class="change-login-text">
+                    — <a onclick="goToLogin()">Kembali ke Login</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">TOTAL PENGGUNA</div>
+                    <div class="stat-value" id="totalUsers">1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">PENGGUNA AKTIF</div>
+                    <div class="stat-value" id="activeUsers">1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">AKUN TERKUNCI</div>
+                    <div class="stat-value" id="lockedAccounts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">AKUN HARI INI</div>
+                    <div class="stat-value" id="todayAccounts">0</div>
+                </div>
+            </div>
+
+            <div class="accounts-section">
+                <h3>Daftar Akun Terdaftar</h3>
+                <table class="accounts-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Nomor HP</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Terdaftar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accountsTableBody">
+                        <!-- Accounts akan di-generate oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA STORAGE ==================== 
+        let users = JSON.parse(localStorage.getItem('cloudstore_users')) || [
+            {
+                id: 1,
+                name: 'Admin Cloudstore',
+                phone: '08125854558',
+                email: 'admin@cloudstore.id',
+                password: 'Admin123',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            }
+        ];
+
+        let currentUser = JSON.parse(localStorage.getItem('cloudstore_current_user')) || null;
+
+        // ==================== NAVIGATION FUNCTIONS ==================== 
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function goToLogin() {
+            showPage('loginPage');
+        }
+
+        function goToRegister() {
+            showPage('registerPage');
+        }
+
+        function goToMarketplace() {
+            if (!currentUser) {
+                alert('Silakan login terlebih dahulu');
+                goToLogin();
+                return;
+            }
+            showPage('marketplacePage');
+            loadProducts();
+            updateUserGreeting();
+        }
+
+        function goToAdmin() {
+            if (!currentUser) {
+                alert('Silakan login terlebih dahulu');
+                goToLogin();
+                return;
+            }
+            showPage('adminPage');
+            loadAdminData();
+        }
+
+        // ==================== LOGIN & REGISTER ==================== 
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(u => u.phone === phone && u.password === password);
+
+            if (user) {
+                currentUser = {
+                    id: user.id,
+                    name: user.name,
+                    phone: user.phone,
+                    email: user.email
+                };
+                localStorage.setItem('cloudstore_current_user', JSON.stringify(currentUser));
+                goToMarketplace();
+            } else {
+                alert('Nomor HP atau password salah!');
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Kata sandi tidak cocok!');
+                return;
+            }
+
+            if (users.find(u => u.phone === phone)) {
+                alert('Nomor HP sudah terdaftar!');
+                return;
+            }
+
+            if (users.find(u => u.email === email)) {
+                alert('Email sudah terdaftar!');
+                return;
+            }
+
+            const newUser = {
+                id: users.length + 1,
+                name,
+                phone,
+                email,
+                password,
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('cloudstore_users', JSON.stringify(users));
+
+            alert('Akun berhasil dibuat! Silakan login.');
+            document.getElementById('registerForm').reset();
+            goToLogin();
+        }
+
+        // ==================== MARKETPLACE ==================== 
+        function loadProducts() {
+            const products = [
+                { id: 1, name: 'Produk Elektronik', price: 'Rp 50.000' },
+                { id: 2, name: 'Peralatan Rumah', price: 'Rp 75.000' },
+                { id: 3, name: 'Fashion Items', price: 'Rp 100.000' },
+                { id: 4, name: 'Aksesoris', price: 'Rp 25.000' },
+                { id: 5, name: 'Gadget Terbaru', price: 'Rp 150.000' },
+                { id: 6, name: 'Kebutuhan Sehari-hari', price: 'Rp 30.000' },
+            ];
+
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image">📦</div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateUserGreeting() {
+            if (currentUser) {
+                document.getElementById('userGreeting').textContent = `Halo, ${currentUser.name}!`;
+            }
+        }
+
+        // ==================== ADMIN DASHBOARD ==================== 
+        function loadAdminData() {
+            const activeUsers = users.filter(u => u.status === 'active').length;
+            const lockedAccounts = users.filter(u => u.status === 'locked').length;
+            const todayAccounts = users.filter(u => 
+                new Date(u.createdAt).toDateString() === new Date().toDateString()
+            ).length;
+
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('lockedAccounts').textContent = lockedAccounts;
+            document.getElementById('todayAccounts').textContent = todayAccounts;
+
+            loadAccountsTable();
+        }
+
+        function loadAccountsTable() {
+            const tbody = document.getElementById('accountsTableBody');
+            tbody.innerHTML = users.map((user, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${user.name}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <span class="status-badge status-${user.status}">
+                            ${user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>${new Date(user.createdAt).toLocaleDateString('id-ID')}</td>
+                </tr>
+            `).join('');
+        }
+
+        function handleAdminMenuClick(event, section) {
+            event.preventDefault();
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            event.target.closest('a').classList.add('active');
+            
+            if (section === 'dashboard') {
+                loadAdminData();
+            } else if (section === 'accounts') {
+                loadAdminData();
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                currentUser = null;
+                localStorage.removeItem('cloudstore_current_user');
+                goToLogin();
+            }
+        }
+
+        // ==================== INIT ==================== 
+        window.addEventListener('load', () => {
+            if (currentUser) {
+                goToMarketplace();
+            }
+        });
+    </script>
+
+</body>
+</html>
